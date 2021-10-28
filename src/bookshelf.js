@@ -20,22 +20,23 @@ class Shelf extends React.Component {
 
     }
 
+
     render() {
         return (
             <div className="bookshelf">
                 <h2 className="bookshelf-title">Reading</h2>
                 <div className="bookshelf-books">
-                    <Book books={this.state.reading}/>
+                    <Book books={this.state.reading} onChangeShelf={this.handleChangeCategory}/>
                 </div>
 
                 <h2 className="bookshelf-title">Want To Read</h2>
                 <div className="bookshelf-books">
-                    <Book books={this.state.wantToRead}/>
+                    <Book books={this.state.wantToRead} onChangeShelf={this.handleChangeCategory}/>
                 </div>
 
                 <h2 className="bookshelf-title">Already Read</h2>
                 <div className="bookshelf-books">
-                    <Book books={this.state.read}/>
+                    <Book books={this.state.read} onChangeShelf={this.handleChangeCategory}/>
                 </div>
             </div>
         )
@@ -49,6 +50,31 @@ class Shelf extends React.Component {
         this.setState({wantToRead: wantTo})
         this.setState({read: read})
     }
+
+
+    handleChangeCategory = (data) => {
+        const {bookId, toShelf} = data
+        console.log(bookId, "to", toShelf)
+
+        if (toShelf === "none" || toShelf === "move"){ return null }
+
+        let newBooks = this.state.books
+        let bookIndex = newBooks.findIndex(i => i.id === bookId)
+
+        if (this.state.books[bookIndex].shelf === toShelf) { return null }
+
+        newBooks[bookIndex].shelf = toShelf
+        console.log(newBooks)
+
+        this.setState({
+            books: newBooks
+        })
+
+        // TODO: update online db
+
+        this.groupByShelf()
+    }
+
 }
 
 class Book extends React.Component {
@@ -67,7 +93,7 @@ class Book extends React.Component {
                                     backgroundImage: "url(" + b.imageLinks.thumbnail + ")"
                                 }}></div>
                                 <div className="book-shelf-changer">
-                                    <select>
+                                    <select value="none" onChange={ e => this.handleChangeShelf(b.id, e.target.value) }>
                                         <option value="move" disabled>Move to...</option>
                                         <option value="currentlyReading">Currently Reading</option>
                                         <option value="wantToRead">Want to Read</option>
@@ -84,6 +110,11 @@ class Book extends React.Component {
             }
         </ol>
     }
+
+    handleChangeShelf = (bookId, toShelf) => {
+       this.props.onChangeShelf({ bookId, toShelf })
+    }
+
 }
 
 export default Shelf
