@@ -1,5 +1,6 @@
 import React from "react";
 import * as BooksAPI from "./BooksAPI"
+import {Link} from "react-router-dom";
 
 class SearchPage extends React.Component {
     state = {
@@ -7,12 +8,21 @@ class SearchPage extends React.Component {
     }
 
     render() {
+        let noResults;
+        let queryRes = this.state.searchResult;
+        if (this.state.searchResult.length === 0){
+            noResults = <p>no results.</p>
+        } else {
+            noResults = null
+        }
+        if (queryRes.error){
+            noResults = <p>Bad query: {queryRes.error}</p>
+        }
+
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    <a href="#" className="close-search" onClick={(e) => {
-                        this.handleCloseSearch(e)
-                    }}>Close</a>
+                    <Link className={"close-search"} to={"/"}>Ret</Link>
                     <div className="search-books-input-wrapper">
                         {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -24,11 +34,11 @@ class SearchPage extends React.Component {
                 */}
                         <input type="text" placeholder="Search by title or author"
                                onInput={(e) => this.handleSearch(e)}/>
-
                     </div>
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
+                        {noResults}
                         {this.state.searchResult.length > 0 && this.state.searchResult.map((b) => {
                             try {
                                 let t = b.imageLinks.thumbnail
@@ -61,8 +71,6 @@ class SearchPage extends React.Component {
                                 </li>
                             )
                         })}
-
-
                     </ol>
                 </div>
             </div>

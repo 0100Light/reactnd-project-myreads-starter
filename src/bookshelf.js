@@ -25,16 +25,26 @@ class Shelf extends React.Component {
 
 
     render() {
+        let searchPage
+        if (this.state.showSearchPage){
+            searchPage =
+                <div className="search-books">
+                    <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={this.addBookToShelf}/>
+                </div>
+        } else {
+            searchPage = null
+        }
         return (
             <div>
-                <Route path={"/search"}>
-                    <div className="search-books">
-                        {/*<button className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</button>*/}
+                <Route exact path={"/search"} render={()=>{
+                    return <div className="search-books bookshelf">
+                        <h2 className={"bookshelf-title"} style={{color: "#7e7e7e"}}>Search Result</h2>
                         <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={this.addBookToShelf}/>
                     </div>
+                }}>
                 </Route>
                 <div className="open-search">
-                    <Link to={"/search"}>
+                    <Link to={"/search"} onClick={()=> {this.setState({showSearchPage: true})}}>
                         <button>Add a book</button>
                     </Link>
                 </div>
