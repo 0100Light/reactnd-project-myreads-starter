@@ -1,6 +1,7 @@
 import React from "react";
 import * as BooksAPI from "./BooksAPI";
 import SearchPage from "./searchPage";
+import {Link, Route} from "react-router-dom";
 
 class Shelf extends React.Component {
     state = {
@@ -26,16 +27,17 @@ class Shelf extends React.Component {
     render() {
         return (
             <div>
-                {this.state.showSearchPage ? (
+                <Route path={"/search"}>
                     <div className="search-books">
                         {/*<button className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</button>*/}
-                        <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={ this.addBookToShelf }/>
+                        <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={this.addBookToShelf}/>
                     </div>
-                ) : (
-                    <div className="open-search">
-                        <button onClick={() => this.setState({showSearchPage: true})}>Add a book</button>
-                    </div>
-                )}
+                </Route>
+                <div className="open-search">
+                    <Link to={"/search"}>
+                        <button>Add a book</button>
+                    </Link>
+                </div>
                 <div className="bookshelf">
                     <h2 className="bookshelf-title">Reading</h2>
                     <div className="bookshelf-books">
@@ -66,7 +68,7 @@ class Shelf extends React.Component {
 
         BooksAPI.update(book, toShelf).then((res) => {
             console.log("updateResult", res)
-            this.setState({ books: updatedbooks })
+            this.setState({books: updatedbooks})
             this.groupByShelf()
         })
     }
@@ -92,12 +94,16 @@ class Shelf extends React.Component {
         console.log(bookId, "to", toShelf)
 
         // TODO: move to "none" group will delete the book?
-        if (toShelf === "none" || toShelf === "move"){ return null }
+        if (toShelf === "none" || toShelf === "move") {
+            return null
+        }
 
         let newBooks = this.state.books
         let bookIndex = newBooks.findIndex(i => i.id === bookId)
 
-        if (this.state.books[bookIndex].shelf === toShelf) { return null }
+        if (this.state.books[bookIndex].shelf === toShelf) {
+            return null
+        }
 
         newBooks[bookIndex].shelf = toShelf
         console.log(newBooks)
@@ -130,7 +136,7 @@ class Book extends React.Component {
                                     backgroundImage: "url(" + b.imageLinks.thumbnail + ")"
                                 }}></div>
                                 <div className="book-shelf-changer">
-                                    <select value="none" onChange={ e => this.handleChangeShelf(b.id, e.target.value) }>
+                                    <select value="none" onChange={e => this.handleChangeShelf(b.id, e.target.value)}>
                                         <option value="move" disabled>Move to...</option>
                                         <option value="currentlyReading">Currently Reading</option>
                                         <option value="wantToRead">Want to Read</option>
@@ -149,7 +155,7 @@ class Book extends React.Component {
     }
 
     handleChangeShelf = (bookId, toShelf) => {
-       this.props.onChangeShelf({ bookId, toShelf })
+        this.props.onChangeShelf({bookId, toShelf})
     }
 
 }

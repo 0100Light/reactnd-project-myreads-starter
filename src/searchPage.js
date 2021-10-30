@@ -29,7 +29,7 @@ class SearchPage extends React.Component {
                 </div>
                 <div className="search-books-results">
                     <ol className="books-grid">
-                        {this.state.searchResult.map((b) => {
+                        {this.state.searchResult.length > 0 && this.state.searchResult.map((b) => {
                             try {
                                 let t = b.imageLinks.thumbnail
                             } catch (e){

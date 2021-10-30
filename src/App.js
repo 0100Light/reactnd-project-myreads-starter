@@ -1,6 +1,7 @@
 import React from 'react'
 import './App.css'
 import Shelf from "./bookshelf";
+import {BrowserRouter} from "react-router-dom";
 
 class WebTitle extends React.Component {
     render() {
@@ -28,12 +29,12 @@ class BooksApp extends React.Component {
 
     render() {
         return (
-            <div className="app">
-                <WebTitle/>
-
-
-                <Shelf />
-            </div>
+            <BrowserRouter>
+                <div className="app">
+                    <WebTitle/>
+                    <Shelf />
+                </div>
+            </BrowserRouter>
         )
     }
 
