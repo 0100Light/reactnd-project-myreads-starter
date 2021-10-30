@@ -46,6 +46,14 @@ class SearchPage extends React.Component {
                                 return null
                             }
 
+                            //  Books have the same state on both the search page and the main application page:
+                            //  If a book is on a bookshelf, that is reflected in both locations.
+                            let selected = "move"
+                            let foundIndex = this.props.myBooks.findIndex(i => i.id === b.id)
+                            if (foundIndex > -1){
+                                selected = this.props.myBooks[foundIndex].shelf
+                            }
+
                             return (
                                 <li key={b.id}>
                                     <div className="book">
@@ -56,7 +64,7 @@ class SearchPage extends React.Component {
                                                 backgroundImage: "url(" + b.imageLinks.thumbnail + ")"
                                             }}></div>
                                             <div className="book-shelf-changer">
-                                                <select value="none"
+                                                <select value={selected}
                                                         onChange={e => this.handleAddBook(b, e.target.value)}>
                                                     <option value="move" disabled>Move to...</option>
                                                     <option value="currentlyReading">Currently Reading</option>
@@ -83,7 +91,6 @@ class SearchPage extends React.Component {
             this.setState({searchResult: []})
             return
         }
-        console.log("handle search", searchTerm)
         BooksAPI.search(searchTerm).then((res) => {
             this.setState({
                 searchResult: res

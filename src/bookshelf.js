@@ -2,6 +2,7 @@ import React from "react";
 import * as BooksAPI from "./BooksAPI";
 import SearchPage from "./searchPage";
 import {Link, Route} from "react-router-dom";
+import {Book} from "./book";
 
 class Shelf extends React.Component {
     state = {
@@ -30,31 +31,34 @@ class Shelf extends React.Component {
                 <Route exact path={"/search"} render={()=>{
                     return <div className="search-books bookshelf">
                         <h2 className={"bookshelf-title"} style={{color: "#7e7e7e"}}>Search Result</h2>
-                        <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={this.addBookToShelf}/>
+                        <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={this.addBookToShelf} myBooks={this.state.books}/>
                     </div>
-                }}>
-                </Route>
+                }}/>
+
                 <div className="open-search">
                     <Link to={"/search"} onClick={()=> {this.setState({showSearchPage: true})}}>
                         <button>Add a book</button>
                     </Link>
                 </div>
-                <div className="bookshelf">
-                    <h2 className="bookshelf-title">Reading</h2>
-                    <div className="bookshelf-books">
-                        <Book books={this.state.reading} onChangeShelf={this.handleChangeCategory}/>
-                    </div>
 
-                    <h2 className="bookshelf-title">Want To Read</h2>
-                    <div className="bookshelf-books">
-                        <Book books={this.state.wantToRead} onChangeShelf={this.handleChangeCategory}/>
-                    </div>
+                <Route exact path={"/"} render={_=>{
+                    return <div className="bookshelf">
+                        <h2 className="bookshelf-title">Reading</h2>
+                        <div className="bookshelf-books">
+                            <Book books={this.state.reading} onChangeShelf={this.handleChangeCategory}/>
+                        </div>
 
-                    <h2 className="bookshelf-title">Already Read</h2>
-                    <div className="bookshelf-books">
-                        <Book books={this.state.read} onChangeShelf={this.handleChangeCategory}/>
+                        <h2 className="bookshelf-title">Want To Read</h2>
+                        <div className="bookshelf-books">
+                            <Book books={this.state.wantToRead} onChangeShelf={this.handleChangeCategory}/>
+                        </div>
+
+                        <h2 className="bookshelf-title">Already Read</h2>
+                        <div className="bookshelf-books">
+                            <Book books={this.state.read} onChangeShelf={this.handleChangeCategory}/>
+                        </div>
                     </div>
-                </div>
+                }}/>
             </div>
         )
     }
@@ -94,7 +98,6 @@ class Shelf extends React.Component {
         const {bookId, toShelf} = data
         console.log(bookId, "to", toShelf)
 
-        // TODO: move to "none" group will delete the book?
         if (toShelf === "none" || toShelf === "move") {
             return null
         }
@@ -117,46 +120,6 @@ class Shelf extends React.Component {
             })
             this.groupByShelf()
         })
-    }
-
-}
-
-class Book extends React.Component {
-    render() {
-        const books = this.props.books
-
-        return <ol className="books-grid">
-            {
-                books.map((b) => (
-                    <li key={b.id}>
-                        <div className="book">
-                            <div className="book-top">
-                                <div className="book-cover" style={{
-                                    width: 128,
-                                    height: 193,
-                                    backgroundImage: "url(" + b.imageLinks.thumbnail + ")"
-                                }}></div>
-                                <div className="book-shelf-changer">
-                                    <select value="none" onChange={e => this.handleChangeShelf(b.id, e.target.value)}>
-                                        <option value="move" disabled>Move to...</option>
-                                        <option value="currentlyReading">Currently Reading</option>
-                                        <option value="wantToRead">Want to Read</option>
-                                        <option value="read">Read</option>
-                                        <option value="none">None</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="book-title">{b.title}</div>
-                            <div className="book-authors">{b.authors ? b.authors.toString() : ""}</div>
-                        </div>
-                    </li>
-                ))
-            }
-        </ol>
-    }
-
-    handleChangeShelf = (bookId, toShelf) => {
-        this.props.onChangeShelf({bookId, toShelf})
     }
 
 }
