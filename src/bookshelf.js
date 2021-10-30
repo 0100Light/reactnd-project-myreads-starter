@@ -25,15 +25,6 @@ class Shelf extends React.Component {
 
 
     render() {
-        let searchPage
-        if (this.state.showSearchPage){
-            searchPage =
-                <div className="search-books">
-                    <SearchPage onCloseSearch={this.closeSearchPage} onAddBook={this.addBookToShelf}/>
-                </div>
-        } else {
-            searchPage = null
-        }
         return (
             <div>
                 <Route exact path={"/search"} render={()=>{

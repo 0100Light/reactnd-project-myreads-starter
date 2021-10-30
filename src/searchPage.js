@@ -40,12 +40,12 @@ class SearchPage extends React.Component {
                     <ol className="books-grid">
                         {noResults}
                         {this.state.searchResult.length > 0 && this.state.searchResult.map((b) => {
-                            try {
-                                let t = b.imageLinks.thumbnail
-                            } catch (e){
-                                console.log("skip loading due to loss of thumbnail")
-                                return
+
+                            if (!b.imageLinks){
+                                console.log("skip loading due to empty imageLinks")
+                                return null
                             }
+
                             return (
                                 <li key={b.id}>
                                     <div className="book">
